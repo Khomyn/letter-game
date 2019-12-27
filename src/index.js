@@ -1,12 +1,13 @@
 const ul = document.getElementById('letter-wrapper');
-const button = document.getElementById('button');
+const resetBtn = document.getElementById('reset');
 const guesses = document.getElementById('guesses');
 const guessesNumber = document.getElementById('number');
 const liList = ul.getElementsByTagName('li');
 const endGame = document.getElementById('end-game');
 
-let attemps = 5;
-const puzzle = 'qwerty qwerty'.split('');
+let attemps;
+let puzzle;
+
 
 const checkIsGuessed = (puzzle) => {
   const letters = [];
@@ -19,9 +20,6 @@ const checkIsGuessed = (puzzle) => {
   }
   const word = letters.join('').toLowerCase();
 
-  console.log(puzzle.join('').toLowerCase())
-  console.log(word);
-  console.log(puzzle.join('') === word);
 //
 //   if(puzzle === word) {
 //     return true;
@@ -78,5 +76,24 @@ window.addEventListener('keypress', (event) => {
   renderMsg(attemps);
 });
 
-renderMsg(attemps);
-render(puzzle);
+const startGame = (data) => {
+  puzzle = data;
+
+  while (ul.firstChild) {
+    ul.removeChild(ul.firstChild);
+  }
+
+  attemps = 5;
+
+  renderMsg(attemps);
+  render(puzzle);
+};
+
+resetBtn.addEventListener('click', ()=> startGame());
+
+const randomNumber = () => Math.floor(Math.random() * 10) | 1;
+
+fetch(`https://puzzle.mead.io/puzzle?wordCount=${randomNumber()}`)
+    .then(res => res.json())
+    .then(res => console.log(res))
+    .then(obj => startGame());
